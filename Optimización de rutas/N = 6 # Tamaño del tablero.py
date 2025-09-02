@@ -2,6 +2,9 @@ import pygame
 import math
 import sys
 
+
+
+
 # --- Configuración ---
 WIDTH, HEIGHT = 700, 500
 FPS = 60
@@ -145,14 +148,20 @@ class Carrito:
     def draw(self, surface):
         pygame.draw.circle(surface, CAR_COLOR, logical_to_screen(*self.pos), int(NODE_RADIUS * zoom))
 
-# --- Inicializar ruta ---
-origen = 1
-destino = 12
-ruta = reconstruir_ruta(origen, destino)
-if not ruta:
-    print(f"No hay ruta entre {origen} y {destino}")
-    sys.exit()
-carrito = Carrito(ruta, nodos)
+
+
+origenes = [1, 2, 5, 13]
+destinos = [12, 8, 11, 4]
+
+# Crear rutas para cada carrito
+carritos = []
+for o, d in zip(origenes, destinos):
+    ruta = reconstruir_ruta(o, d)
+    if ruta:
+        carritos.append(Carrito(ruta, nodos))
+    else:
+        print(f"No hay ruta entre {o} y {d}")
+
 
 font = pygame.font.SysFont(None, 20)
 
@@ -179,8 +188,8 @@ while running:
         elif event.type == pygame.MOUSEWHEEL:
             zoom += ZOOM_STEP * event.y
             zoom = max(0.5, min(10, zoom))
-
-    carrito.update()
+    for carrito in carritos:
+        carrito.update()
 
     # Dibujar fondo tipo plano cartesiano
     screen.fill(BG_COLOR)
@@ -199,8 +208,9 @@ while running:
         pygame.draw.line(screen, EDGE_COLOR, logical_to_screen(*nodos[u]), logical_to_screen(*nodos[v]), 2)
 
     # Dibujar ruta más corta
-    for i in range(len(ruta) - 1):
-        pygame.draw.line(screen, ROUTE_COLOR, logical_to_screen(*nodos[ruta[i]]), logical_to_screen(*nodos[ruta[i + 1]]), 4)
+    for carrito in carritos:
+        for i in range(len(carrito.path) - 1):
+            pygame.draw.line(screen, ROUTE_COLOR, logical_to_screen(*nodos[carrito.path[i]]), logical_to_screen(*nodos[carrito.path[i + 1]]), 4)
 
     # Dibujar nodos
     for node_id, (x, y) in nodos.items():
@@ -209,7 +219,8 @@ while running:
         screen.blit(img, logical_to_screen(x - 1.2, y - 1.2))
 
     # Dibujar carrito
-    carrito.draw(screen)
+    for carrito in carritos:
+        carrito.draw(screen)
 
     # Mostrar coordenadas lógicas del mouse
     mouse_pos = pygame.mouse.get_pos()

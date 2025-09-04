@@ -5,7 +5,7 @@ import random
 
 
 # --- Configuración ---
-WIDTH, HEIGHT = 900, 700
+WIDTH, HEIGHT = 1500, 700
 FPS = 60
 NODE_RADIUS = 10  # Radio de los nodos para dibujar
 PLAYER_SPEED = 2
@@ -32,85 +32,29 @@ EDGE_COLOR = (70, 70, 70)
 PLAYER_COLOR = (0, 180, 0)
 ENEMY_COLOR = (255, 69, 0)
 
-# --- Grafo ---
+
 nodes = {
-    0: (154, 8),
-    1: (205, 82),
-    2: (308, 209),
-    3: (324, 144),
-    4: (262, 365),
-    5: (339, 403),
-    6: (236, 461),
-    7: (316, 510),
-    8: (343, 9),
-    9: (391, 167),
-    10: (126, 144),
-    11: (14, 11),
-    12: (65, 325),
-    13: (6, 283),
-    14: (148, 390),
-    15: (203, 245),
-    16: (372, 268),
-    17: (526, 80),
-    18: (616, 180),
-    19: (542, 278),
-    20: (714, 53),
-    21: (493, 343),
-    22: (397, 480),
-    23: (458, 567),
-    24: (292, 649),
-    25: (216, 555),
-    26: (580, 451),
-    27: (661, 369),
-    28: (708, 299),
-    29: (739, 183),
-    30: (847, 278),
-    31: (837, 419),
-    32: (727, 460),
-    33: (748, 573),
-    34: (649, 545),
-    35: (517, 654)
+    0: (257, 8), 1: (342, 82), 2: (513, 209), 3: (540, 144), 4: (437, 365),
+    5: (565, 403), 6: (393, 461), 7: (527, 510), 8: (572, 9), 9: (651, 167),
+    10: (210, 144), 11: (23, 11), 12: (108, 325), 13: (10, 283), 14: (247, 390),
+    15: (338, 245), 16: (620, 268), 17: (877, 80), 18: (1027, 180), 19: (903, 278),
+    20: (1190, 53), 21: (822, 343), 22: (661, 480), 23: (763, 567), 24: (486, 649),
+    25: (360, 555), 26: (967, 451), 27: (1098, 369), 28: (1179, 299), 29: (1232, 183),
+    30: (1395, 278), 31: (1395, 419), 32: (1212, 460), 33: (1246, 573), 34: (1082, 545),
+    35: (861, 654)
 }
 
 
-edges = {
-    0: [1],
-    1: [0, 2,10],
-    2: [1, 3, 4, 16],
-    3: [2,8,9],
-    4: [5, 6, 2],
-    5: [4, 7, 22, 16],
-    6: [4, 7, 14, 25],
-    7: [5, 6, 24],
-    8: [3],
-    9: [3, 16,17, 19],
-    10: [1,11,12, 15],
-    11: [10],
-    12: [10,13,14],
-    13: [12],
-    14: [12,6,10, 15],
-    15: [10,14],
-    16: [9,2,21, 5],
-    17: [9,18],
-    18: [17,20, 19],
-    19: [18,21, 9, 27],
-    20: [18, 29],
-    21: [16,19,22, 26],
-    22: [5, 21, 23],
-    23: [22,24,26,35],
-    24: [25,23, 7],
-    25: [6,24],
-    26: [21,23,34,27],
-    27: [26, 19, 32, 28],
-    28: [27, 30,29],
-    29: [28, 20],
-    30: [28, 31],
-    31: [30, 32],
-    32: [31, 27,33],
-    33: [32,34],
-    34: [26, 35, 33],
-    35: [23, 34]
-}
+
+edges = {0: [1], 1: [0, 2, 10], 2: [1, 3, 4, 16], 3: [2, 8, 9], 4: [5, 6, 2],
+         5: [4, 7, 22, 16], 6: [4, 7, 14, 25], 7: [5, 6, 24], 8: [3], 9: [3, 16, 17, 19],
+         10: [1, 11, 12, 15], 11: [10], 12: [10, 13, 14], 13: [12], 14: [12, 6, 15],
+         15: [10, 14], 16: [9, 2, 21, 5], 17: [9, 18], 18: [17, 20, 19], 19: [18, 21, 9, 27],
+         20: [18, 29], 21: [16, 19, 22, 26], 22: [5, 21, 23], 23: [22, 24, 26, 35],
+         24: [25, 23, 7], 25: [6, 24], 26: [21, 23, 34, 27], 27: [26, 19, 32, 28],
+         28: [27, 30, 29], 29: [28, 20], 30: [28, 31], 31: [30, 32], 32: [31, 27, 33],
+         33: [32, 34], 34: [26, 35, 33], 35: [23, 34]}
+
 
 # --- Floyd-Warshall ---
 def floyd_warshall(nodes, edges):
@@ -177,7 +121,7 @@ class Player:
         self.t = 0
         self.start_pos = list(self.pos)
         self.end_pos = list(self.pos)
-        self.last_angle = 0  # Ángulo de orientación
+        self.last_angle = 0
 
     def move_to(self, node):
         self.target_node = node
@@ -185,7 +129,7 @@ class Player:
         self.start_pos = list(self.pos)
         self.end_pos = list(nodes[node])
         dx, dy = self.end_pos[0] - self.start_pos[0], self.end_pos[1] - self.start_pos[1]
-        self.last_angle = math.degrees(math.atan2(dy, dx))  # Guardar ángulo al iniciar movimiento
+        self.last_angle = math.degrees(math.atan2(dy, dx))
 
     def update(self):
         if self.target_node is not None:
@@ -220,15 +164,11 @@ class Enemy:
         self.last_angle = 0  # Ángulo de orientación
 
     def chase(self, player):
-        # Ver si el jugador está en movimiento
         if player.target_node is not None:
-            # Jugador se mueve: perseguir el nodo hacia el que va
             target = player.target_node
         else:
-            # Jugador está quieto: perseguir el nodo actual
             target = player.current_node
 
-        # Solo recalcular si estamos en un nodo
         if self.target_node is None:
             self.path = shortest_path(self.current_node, target)
             if len(self.path) > 1:
@@ -249,12 +189,9 @@ class Enemy:
                 self.pos = self.end_pos
                 self.current_node = self.target_node
                 self.target_node = None
-                # Mantener el último ángulo
             else:
-                # Actualizar posición
                 self.pos[0] = self.start_pos[0] + dx * self.t
                 self.pos[1] = self.start_pos[1] + dy * self.t
-                # Ángulo durante el movimiento
                 self.last_angle = math.degrees(math.atan2(dy, dx))
 
     def draw(self):
@@ -282,7 +219,6 @@ spawn_nodes = [24, 13, 11, 35, 24, 30, 33, 0, 17]
 while running:
     screen.blit(background_img, (0, 0))
 
-    # Eventos
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -299,9 +235,9 @@ while running:
 
     now = pygame.time.get_ticks()
     if now - last_spawn_time > spawn_interval:
-        random_node = random.choice(spawn_nodes)  # elegir nodo aleatorio permitido
-        enemies.append(Enemy(random_node))  # añadir nuevo enemigo
-        last_spawn_time = now  # reiniciar temporizador
+        random_node = random.choice(spawn_nodes)
+        enemies.append(Enemy(random_node))
+        last_spawn_time = now
 
     # Actualizar enemigos
     for enemy in enemies:
@@ -318,7 +254,6 @@ while running:
                 text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
                 screen.blit(text, text_rect)
                 pygame.display.flip()
-
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         running = False
